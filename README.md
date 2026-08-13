@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center"> Quantum-Inspired Tree Tensor Networks</h1>
+  <h1 align="center">Quantum-Inspired Tree Tensor Networks</h1>
   <p align="center">
     <strong>Hierarchical Learning, Parameter Compression & Feature Extraction</strong>
   </p>
@@ -114,7 +114,7 @@ Most of our project is about **recognizing** images (classification). But this p
 
 ---
 
-### 4.  Entanglement Entropy Interpretability
+### 4. Entanglement Entropy Interpretability
 
 #### Technical
 For any bipartition of features into sets $A$ and $B$, the von Neumann entanglement entropy is $S(A) = -\text{Tr}(\rho_A \log_2 \rho_A)$, where $\rho_A = \text{Tr}_B(|\Psi\rangle\langle\Psi|)$. We compute this at every bond in the TTN to produce:
@@ -129,7 +129,7 @@ This gives us a **heat map of feature importance** — we can literally see whic
 
 ---
 
-### 5.  Tensorized Transformer Compression
+### 5. Tensorized Transformer Compression
 
 #### Technical
 We apply tensor-train decomposition to the $W_Q, W_K, W_V, W_O$ projection matrices of transformer attention. Weight matrix $W \in \mathbb{R}^{d \times d}$ is reshaped into a higher-order tensor and decomposed as a chain of TT-cores, achieving $O(k \cdot d^{2/k} \cdot r^2)$ parameters vs. $O(d^2)$ for dense.
@@ -141,54 +141,54 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 ## Project Phases
 
-### Phase 1: Foundation ( Complete)
+### Phase 1: Foundation (Complete)
 > *"Set up the workshop before you build the machine."*
 
 | What | Status | Description |
 |:---|:---|:---|
-| Project structure |  | 31 source files organized into 7 packages |
-| Data pipeline |  | MNIST, Fashion-MNIST, CIFAR-10 with train/val/test splits |
-| Feature maps |  | Trigonometric, Fourier (learnable), POVM embeddings |
-| Tensor utilities |  | Contraction, QR init, MI computation, SVD truncation |
-| Test suite |  | **34/34 tests passing** |
+| Project structure | | 31 source files organized into 7 packages |
+| Data pipeline | | MNIST, Fashion-MNIST, CIFAR-10 with train/val/test splits |
+| Feature maps | | Trigonometric, Fourier (learnable), POVM embeddings |
+| Tensor utilities | | Contraction, QR init, MI computation, SVD truncation |
+| Test suite | | **34/34 tests passing** |
 
-** Translation:** We built all the tools and parts we need. Think of this as buying all the ingredients and preheating the oven.
+**Translation:** We built all the tools and parts we need. Think of this as buying all the ingredients and preheating the oven.
 
 ---
 
-### Phase 2: Core Models ( Complete)
+### Phase 2: Core Models (Complete)
 > *"Build the engine."*
 
 | Model | Status | File | Parameters (MNIST) |
 |:---|:---|:---|:---|
-| TTN Classifier |  | `src/models/ttn.py` | ~278K |
-| Augmented TTN |  | `src/models/augmented_ttn.py` | ~300K |
-| Adaptive TTN |  | `src/models/adaptive_ttn.py` | ~280K |
-| Born Machine |  | `src/models/born_machine.py` | ~270K |
-| Tensorized Attention |  | `src/models/tensorized_attn.py` | Varies |
-| Baselines (LogReg, MLP, CNN, MPS) |  | `src/models/baselines.py` | 7K-100K |
+| TTN Classifier | | `src/models/ttn.py` | ~278K |
+| Augmented TTN | | `src/models/augmented_ttn.py` | ~300K |
+| Adaptive TTN | | `src/models/adaptive_ttn.py` | ~280K |
+| Born Machine | | `src/models/born_machine.py` | ~270K |
+| Tensorized Attention | | `src/models/tensorized_attn.py` | Varies |
+| Baselines (LogReg, MLP, CNN, MPS) | | `src/models/baselines.py` | 7K-100K |
 
-** Translation:** All the AI models are coded up and tested. Now we need to actually train them and see who wins.
+**Translation:** All the AI models are coded up and tested. Now we need to actually train them and see who wins.
 
 ---
 
-### Phase 3: Training & Analysis ( Infrastructure Ready)
+### Phase 3: Training & Analysis (Infrastructure Ready)
 > *"Now we race them."*
 
 | Component | Status | File |
 |:---|:---|:---|
-| Training loop + WandB |  | `src/training/trainer.py` |
-| Custom losses |  | `src/training/losses.py` |
-| Entanglement analysis |  | `src/analysis/entanglement.py` |
-| Interpretability |  | `src/analysis/interpretability.py` |
-| Compression analysis |  | `src/analysis/compression.py` |
-| Visualization |  | `src/utils/visualization.py` |
+| Training loop + WandB | | `src/training/trainer.py` |
+| Custom losses | | `src/training/losses.py` |
+| Entanglement analysis | | `src/analysis/entanglement.py` |
+| Interpretability | | `src/analysis/interpretability.py` |
+| Compression analysis | | `src/analysis/compression.py` |
+| Visualization | | `src/utils/visualization.py` |
 
-** Translation:** The race track is built, the stopwatches are ready, and we have cameras to analyze every moment of the race.
+**Translation:** The race track is built, the stopwatches are ready, and we have cameras to analyze every moment of the race.
 
 ---
 
-### Phase 4: Experiments ( Next — Run on H200)
+### Phase 4: Experiments (Next — Run on H200)
 > *"The actual science."*
 
 | # | Experiment | Dataset | What We're Testing |
@@ -204,11 +204,11 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 | E9 | Transformer Compression | CIFAR-10 | How much can we compress ViT? |
 | E10 | Scaling Analysis | Synthetic | How does param count scale with input size? |
 
-** Translation:** This is where we actually run all the experiments and collect data. Each experiment answers a specific question. We need all these results to write a convincing paper.
+**Translation:** This is where we actually run all the experiments and collect data. Each experiment answers a specific question. We need all these results to write a convincing paper.
 
 ---
 
-### Phase 5: Paper & Publication ( Upcoming)
+### Phase 5: Paper & Publication (Upcoming)
 > *"Tell the world."*
 
 **Target venues:** ICML 2027 / NeurIPS 2027 / ICLR 2027
@@ -237,7 +237,7 @@ python experiments/run_classification.py \
     --max_samples 1000
 ```
 
-** What this does:** Trains a small TTN on 1000 MNIST images for 5 epochs just to check everything works. Think of it as a test drive.
+**What this does:** Trains a small TTN on 1000 MNIST images for 5 epochs just to check everything works. Think of it as a test drive.
 
 ### Full Training (GPU recommended)
 
@@ -259,7 +259,7 @@ python experiments/run_classification.py \
 python experiments/run_classification.py --config configs/cifar10.yaml
 ```
 
-** What this does:** Full training on the complete dataset. Takes ~5-30 minutes on GPU depending on the model and dataset. This is where we get real results.
+**What this does:** Full training on the complete dataset. Takes ~5-30 minutes on GPU depending on the model and dataset. This is where we get real results.
 
 ### Compare All Models (the big race)
 
@@ -273,7 +273,7 @@ for model in ttn augmented_ttn adaptive_ttn logistic_regression mlp cnn mps; do
 done
 ```
 
-** What this does:** Trains every model on the same data and saves all results for comparison. This is how we prove TTN is competitive.
+**What this does:** Trains every model on the same data and saves all results for comparison. This is how we prove TTN is competitive.
 
 ### Ablation Studies (finding the sweet spot)
 
@@ -289,7 +289,7 @@ python experiments/run_ablation.py \
     --ablation feature_map_sweep
 ```
 
-** What this does:** Systematically varies one thing at a time (bond dimension, feature map, etc.) to understand exactly what matters. This is the most important part of the paper.
+**What this does:** Systematically varies one thing at a time (bond dimension, feature map, etc.) to understand exactly what matters. This is the most important part of the paper.
 
 ### Interpretability Analysis (after training)
 
@@ -299,7 +299,7 @@ python experiments/run_interpretability.py \
     --checkpoint results/mnist/ttn/checkpoints/best_model.pt
 ```
 
-** What this does:** Takes a trained model and analyzes *why* it makes its decisions using entanglement entropy. Produces beautiful heatmaps showing which pixels matter most.
+**What this does:** Takes a trained model and analyzes *why* it makes its decisions using entanglement entropy. Produces beautiful heatmaps showing which pixels matter most.
 
 ---
 
@@ -431,7 +431,7 @@ tree-tensor-networks/
 
 ## Key Hyperparameters
 
-| Parameter | What It Controls | Typical Values |  Analogy |
+| Parameter | What It Controls | Typical Values | Analogy |
 |:---|:---|:---|:---|
 | `bond_dim` (χ) | Expressivity vs. compression | 2, 4, 8, **16**, 32, 64 | The "resolution" of the compression |
 | `local_dim` (d) | Feature embedding richness | **2**, 4, 8 | How detailed the initial translation is |
