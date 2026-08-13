@@ -1,0 +1,59 @@
+# CIFAR-10 experiment configuration
+dataset:
+  name: cifar10
+  root: ./data
+  num_classes: 10
+  input_dim: 3072  # 32x32x3 flattened
+  resize: null
+
+feature_map:
+  type: fourier         # use learnable Fourier for complex data
+  local_dim: 2
+  num_frequencies: 8
+  learnable_frequencies: true
+  povm_dim: 4
+
+model:
+  type: augmented_ttn   # use augmented TTN for CIFAR
+  bond_dim: 32
+  num_classes: 10
+  use_bias: false
+  init_method: qr
+  use_disentanglers: true
+  adaptive_topology: false
+  mi_warmup_epochs: 5
+  gumbel_temperature: 1.0
+  gumbel_anneal_rate: 0.003
+
+training:
+  epochs: 200
+  batch_size: 128
+  learning_rate: 0.003
+  optimizer: adam
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_epochs: 15
+  gradient_clip: 1.0
+  early_stopping_patience: 25
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - param_count
+    - flops
+    - memory
+    - inference_time
+
+logging:
+  use_wandb: true
+  project_name: ttn-research
+  save_checkpoints: true
+  checkpoint_dir: ./checkpoints
+  log_interval: 10
+
+seed: 42
+device: auto
+num_workers: 4

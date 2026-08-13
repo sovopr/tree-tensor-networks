@@ -1,0 +1,63 @@
+# MNIST experiment configuration
+dataset:
+  name: mnist
+  root: ./data
+  num_classes: 10
+  input_dim: 784  # 28x28 flattened
+  resize: null    # no resize needed
+
+feature_map:
+  type: trigonometric  # trigonometric | fourier | povm
+  local_dim: 2         # output dim per feature
+  # Fourier-specific
+  num_frequencies: 4
+  learnable_frequencies: true
+  # POVM-specific
+  povm_dim: 4
+
+model:
+  type: ttn             # ttn | augmented_ttn | adaptive_ttn
+  bond_dim: 8
+  num_classes: 10
+  use_bias: false
+  init_method: qr       # qr | random | identity
+  # Augmented TTN
+  use_disentanglers: false
+  # Adaptive TTN
+  adaptive_topology: false
+  mi_warmup_epochs: 5
+  gumbel_temperature: 1.0
+  gumbel_anneal_rate: 0.003
+
+training:
+  epochs: 100
+  batch_size: 256
+  learning_rate: 0.01
+  optimizer: adam       # adam | sgd | riemannian_adam
+  weight_decay: 1.0e-5
+  scheduler: cosine     # cosine | step | none
+  warmup_epochs: 5
+  gradient_clip: 1.0
+  early_stopping_patience: 15
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - param_count
+    - flops
+    - memory
+    - inference_time
+
+logging:
+  use_wandb: true
+  project_name: ttn-research
+  save_checkpoints: true
+  checkpoint_dir: ./checkpoints
+  log_interval: 10
+
+seed: 42
+device: auto  # auto | cuda | cpu
+num_workers: 4

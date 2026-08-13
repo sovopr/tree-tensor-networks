@@ -1,0 +1,59 @@
+# Fashion-MNIST experiment configuration
+dataset:
+  name: fashion_mnist
+  root: ./data
+  num_classes: 10
+  input_dim: 784
+  resize: null
+
+feature_map:
+  type: trigonometric
+  local_dim: 2
+  num_frequencies: 4
+  learnable_frequencies: true
+  povm_dim: 4
+
+model:
+  type: ttn
+  bond_dim: 16          # higher bond dim for harder dataset
+  num_classes: 10
+  use_bias: false
+  init_method: qr
+  use_disentanglers: false
+  adaptive_topology: false
+  mi_warmup_epochs: 5
+  gumbel_temperature: 1.0
+  gumbel_anneal_rate: 0.003
+
+training:
+  epochs: 150
+  batch_size: 256
+  learning_rate: 0.005
+  optimizer: adam
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  warmup_epochs: 10
+  gradient_clip: 1.0
+  early_stopping_patience: 20
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - param_count
+    - flops
+    - memory
+    - inference_time
+
+logging:
+  use_wandb: true
+  project_name: ttn-research
+  save_checkpoints: true
+  checkpoint_dir: ./checkpoints
+  log_interval: 10
+
+seed: 42
+device: auto
+num_workers: 4

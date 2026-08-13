@@ -1,0 +1,71 @@
+# Ablation study configuration
+# Run with: python experiments/run_ablation.py --config configs/ablation.yaml
+
+# Ablation axes to sweep
+ablations:
+  # Bond dimension sweep
+  bond_dim_sweep:
+    dataset: fashion_mnist
+    model_type: ttn
+    feature_map: trigonometric
+    bond_dims: [2, 4, 8, 16, 32, 64]
+    seeds: [42, 123, 456]
+
+  # Feature map comparison
+  feature_map_sweep:
+    dataset: fashion_mnist
+    model_type: ttn
+    bond_dim: 16
+    feature_maps:
+      - type: trigonometric
+        local_dim: 2
+      - type: fourier
+        local_dim: 2
+        num_frequencies: 4
+        learnable_frequencies: true
+      - type: fourier
+        local_dim: 2
+        num_frequencies: 4
+        learnable_frequencies: false
+      - type: povm
+        povm_dim: 4
+    seeds: [42, 123, 456]
+
+  # Topology comparison
+  topology_sweep:
+    dataset: fashion_mnist
+    bond_dim: 16
+    topologies:
+      - type: fixed_binary
+      - type: mi_guided
+      - type: adaptive_gumbel
+    seeds: [42, 123, 456]
+
+  # Disentangler ablation
+  disentangler_sweep:
+    dataset: fashion_mnist
+    bond_dim: 16
+    models:
+      - type: ttn
+        use_disentanglers: false
+      - type: augmented_ttn
+        use_disentanglers: true
+    seeds: [42, 123, 456]
+
+# Default training params for ablations
+training:
+  epochs: 100
+  batch_size: 256
+  learning_rate: 0.01
+  optimizer: adam
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  warmup_epochs: 5
+  gradient_clip: 1.0
+
+logging:
+  use_wandb: true
+  project_name: ttn-research-ablation
+
+seed: 42
+device: auto
