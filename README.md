@@ -221,7 +221,7 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/tree-tensor-networks.git
+git clone https://github.com/sovopr/tree-tensor-networks.git
 cd tree-tensor-networks
 
 # Install dependencies
@@ -471,7 +471,7 @@ If you use this code in your research, please cite:
          Extraction using Tree Tensor Networks},
   author={Mittal, Tanya and Prusty, K. Soveet Kumar},
   year={2026},
-  url={https://github.com/YOUR_USERNAME/tree-tensor-networks}
+  url={https://github.com/sovopr/tree-tensor-networks}
 }
 ```
 
