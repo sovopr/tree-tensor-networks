@@ -1,18 +1,18 @@
 <p align="center">
-<h1 align="center"> Quantum-Inspired Tree Tensor Networks</h1>
-<p align="center">
-<strong>Hierarchical Learning, Parameter Compression & Feature Extraction</strong>
-</p>
-<p align="center">
-<em>By Tanya Mittal & K. Soveet Kumar Prusty</em>
-</p>
-<p align="center">
-<a href="#what-is-this-project">What Is This?</a> •
-<a href="#novel-contributions">Novel Contributions</a> •
-<a href="#project-phases">Phases</a> •
-<a href="#how-to-run">How to Run</a> •
-<a href="#results">Results</a>
-</p>
+  <h1 align="center"> Quantum-Inspired Tree Tensor Networks</h1>
+  <p align="center">
+    <strong>Hierarchical Learning, Parameter Compression & Feature Extraction</strong>
+  </p>
+  <p align="center">
+    <em>By Tanya Mittal & K. Soveet Kumar Prusty</em>
+  </p>
+  <p align="center">
+    <a href="#what-is-this-project">What Is This?</a> •
+    <a href="#novel-contributions">Novel Contributions</a> •
+    <a href="#project-phases">Phases</a> •
+    <a href="#how-to-run">How to Run</a> •
+    <a href="#results">Results</a>
+  </p>
 </p>
 
 ---
@@ -58,14 +58,14 @@ TTNs implement a hierarchical coarse-graining of input features through a binary
 Think of it like a **tournament bracket** (like March Madness ):
 
 ```
-Round 1:  pixel1 vs pixel2  pixel3 vs pixel4  pixel5 vs pixel6  pixel7 vs pixel8
-↓          ↓          ↓          ↓
-Round 2:  pattern_A      pattern_B      pattern_C      pattern_D
-↓          ↓          ↓          ↓
-Round 3:    shape_1                  shape_2
-↓                    ↓
-Final:             CLASSIFICATION
-"This is a 7!"
+Round 1:   pixel1 vs pixel2    pixel3 vs pixel4    pixel5 vs pixel6    pixel7 vs pixel8
+               ↓                    ↓                    ↓                    ↓
+Round 2:    pattern_A            pattern_B            pattern_C            pattern_D
+               ↓                    ↓                    ↓                    ↓
+Round 3:        shape_1                                    shape_2
+                    ↓                                        ↓
+Final:                          CLASSIFICATION
+                              "This is a 7!"
 ```
 
 At each round, pairs of features get combined into something more meaningful. Raw pixels become edges, edges become shapes, shapes become the final answer. And the magic is — each "round" only needs a tiny tensor (a small block of numbers), not a massive weight matrix.
@@ -114,7 +114,7 @@ Most of our project is about **recognizing** images (classification). But this p
 
 ---
 
-### 4. Entanglement Entropy Interpretability
+### 4.  Entanglement Entropy Interpretability
 
 #### Technical
 For any bipartition of features into sets $A$ and $B$, the von Neumann entanglement entropy is $S(A) = -\text{Tr}(\rho_A \log_2 \rho_A)$, where $\rho_A = \text{Tr}_B(|\Psi\rangle\langle\Psi|)$. We compute this at every bond in the TTN to produce:
@@ -129,7 +129,7 @@ This gives us a **heat map of feature importance** — we can literally see whic
 
 ---
 
-### 5. Tensorized Transformer Compression
+### 5.  Tensorized Transformer Compression
 
 #### Technical
 We apply tensor-train decomposition to the $W_Q, W_K, W_V, W_O$ projection matrices of transformer attention. Weight matrix $W \in \mathbb{R}^{d \times d}$ is reshaped into a higher-order tensor and decomposed as a chain of TT-cores, achieving $O(k \cdot d^{2/k} \cdot r^2)$ parameters vs. $O(d^2)$ for dense.
@@ -146,11 +146,11 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 | What | Status | Description |
 |:---|:---|:---|
-| Project structure | | 31 source files organized into 7 packages |
-| Data pipeline | | MNIST, Fashion-MNIST, CIFAR-10 with train/val/test splits |
-| Feature maps | | Trigonometric, Fourier (learnable), POVM embeddings |
-| Tensor utilities | | Contraction, QR init, MI computation, SVD truncation |
-| Test suite | | **34/34 tests passing** |
+| Project structure |  | 31 source files organized into 7 packages |
+| Data pipeline |  | MNIST, Fashion-MNIST, CIFAR-10 with train/val/test splits |
+| Feature maps |  | Trigonometric, Fourier (learnable), POVM embeddings |
+| Tensor utilities |  | Contraction, QR init, MI computation, SVD truncation |
+| Test suite |  | **34/34 tests passing** |
 
 ** Translation:** We built all the tools and parts we need. Think of this as buying all the ingredients and preheating the oven.
 
@@ -161,12 +161,12 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 | Model | Status | File | Parameters (MNIST) |
 |:---|:---|:---|:---|
-| TTN Classifier | | `src/models/ttn.py` | ~278K |
-| Augmented TTN | | `src/models/augmented_ttn.py` | ~300K |
-| Adaptive TTN | | `src/models/adaptive_ttn.py` | ~280K |
-| Born Machine | | `src/models/born_machine.py` | ~270K |
-| Tensorized Attention | | `src/models/tensorized_attn.py` | Varies |
-| Baselines (LogReg, MLP, CNN, MPS) | | `src/models/baselines.py` | 7K-100K |
+| TTN Classifier |  | `src/models/ttn.py` | ~278K |
+| Augmented TTN |  | `src/models/augmented_ttn.py` | ~300K |
+| Adaptive TTN |  | `src/models/adaptive_ttn.py` | ~280K |
+| Born Machine |  | `src/models/born_machine.py` | ~270K |
+| Tensorized Attention |  | `src/models/tensorized_attn.py` | Varies |
+| Baselines (LogReg, MLP, CNN, MPS) |  | `src/models/baselines.py` | 7K-100K |
 
 ** Translation:** All the AI models are coded up and tested. Now we need to actually train them and see who wins.
 
@@ -177,12 +177,12 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 | Component | Status | File |
 |:---|:---|:---|
-| Training loop + WandB | | `src/training/trainer.py` |
-| Custom losses | | `src/training/losses.py` |
-| Entanglement analysis | | `src/analysis/entanglement.py` |
-| Interpretability | | `src/analysis/interpretability.py` |
-| Compression analysis | | `src/analysis/compression.py` |
-| Visualization | | `src/utils/visualization.py` |
+| Training loop + WandB |  | `src/training/trainer.py` |
+| Custom losses |  | `src/training/losses.py` |
+| Entanglement analysis |  | `src/analysis/entanglement.py` |
+| Interpretability |  | `src/analysis/interpretability.py` |
+| Compression analysis |  | `src/analysis/compression.py` |
+| Visualization |  | `src/utils/visualization.py` |
 
 ** Translation:** The race track is built, the stopwatches are ready, and we have cameras to analyze every moment of the race.
 
@@ -232,9 +232,9 @@ pip install -r requirements.txt
 
 ```bash
 python experiments/run_classification.py \
---config configs/mnist.yaml \
---debug \
---max_samples 1000
+    --config configs/mnist.yaml \
+    --debug \
+    --max_samples 1000
 ```
 
 ** What this does:** Trains a small TTN on 1000 MNIST images for 5 epochs just to check everything works. Think of it as a test drive.
@@ -247,13 +247,13 @@ python experiments/run_classification.py --config configs/mnist.yaml
 
 # Augmented TTN on Fashion-MNIST
 python experiments/run_classification.py \
---config configs/fashion_mnist.yaml \
---model_type augmented_ttn
+    --config configs/fashion_mnist.yaml \
+    --model_type augmented_ttn
 
 # Adaptive TTN (our novel architecture)
 python experiments/run_classification.py \
---config configs/mnist.yaml \
---model_type adaptive_ttn
+    --config configs/mnist.yaml \
+    --model_type adaptive_ttn
 
 # CIFAR-10 (hardest dataset, use augmented TTN)
 python experiments/run_classification.py --config configs/cifar10.yaml
@@ -266,10 +266,10 @@ python experiments/run_classification.py --config configs/cifar10.yaml
 ```bash
 # Run every model on MNIST
 for model in ttn augmented_ttn adaptive_ttn logistic_regression mlp cnn mps; do
-python experiments/run_classification.py \
---config configs/mnist.yaml \
---model_type $model \
---output_dir results/comparison
+    python experiments/run_classification.py \
+        --config configs/mnist.yaml \
+        --model_type $model \
+        --output_dir results/comparison
 done
 ```
 
@@ -280,13 +280,13 @@ done
 ```bash
 # How does bond dimension affect accuracy?
 python experiments/run_ablation.py \
---config configs/ablation.yaml \
---ablation bond_dim_sweep
+    --config configs/ablation.yaml \
+    --ablation bond_dim_sweep
 
 # Which feature map is best?
 python experiments/run_ablation.py \
---config configs/ablation.yaml \
---ablation feature_map_sweep
+    --config configs/ablation.yaml \
+    --ablation feature_map_sweep
 ```
 
 ** What this does:** Systematically varies one thing at a time (bond dimension, feature map, etc.) to understand exactly what matters. This is the most important part of the paper.
@@ -295,8 +295,8 @@ python experiments/run_ablation.py \
 
 ```bash
 python experiments/run_interpretability.py \
---config configs/mnist.yaml \
---checkpoint results/mnist/ttn/checkpoints/best_model.pt
+    --config configs/mnist.yaml \
+    --checkpoint results/mnist/ttn/checkpoints/best_model.pt
 ```
 
 ** What this does:** Takes a trained model and analyzes *why* it makes its decisions using entanglement entropy. Produces beautiful heatmaps showing which pixels matter most.
@@ -307,21 +307,21 @@ python experiments/run_interpretability.py \
 
 ```
 Week 1:
-Day 1-2: E1 (MNIST, all models) → establishes baselines
-Day 3:  E5 (bond dim sweep)   → finds optimal χ
-Day 4:  E4 (feature map sweep) → picks best embedding
-Day 5:  E2 (Fashion-MNIST)   → harder dataset with tuned hyperparams
+  Day 1-2: E1 (MNIST, all models) → establishes baselines
+  Day 3:   E5 (bond dim sweep)     → finds optimal χ
+  Day 4:   E4 (feature map sweep)  → picks best embedding
+  Day 5:   E2 (Fashion-MNIST)      → harder dataset with tuned hyperparams
 
 Week 2:
-Day 1:  E6 (topology ablation) → proves adaptive tree is better
-Day 2:  E8 (interpretability)  → generates all entanglement figures
-Day 3:  E3 (CIFAR-10)      → push to color images
-Day 4:  E7 (Born Machine)    → generative experiments
-Day 5:  E9 (compression)    → transformer compression
+  Day 1:   E6 (topology ablation)  → proves adaptive tree is better
+  Day 2:   E8 (interpretability)   → generates all entanglement figures
+  Day 3:   E3 (CIFAR-10)           → push to color images
+  Day 4:   E7 (Born Machine)       → generative experiments
+  Day 5:   E9 (compression)        → transformer compression
 
 Week 3:
-Day 1-2: Re-run best configs with 3 seeds for statistical significance
-Day 3-5: Generate all paper figures, write results section
+  Day 1-2: Re-run best configs with 3 seeds for statistical significance
+  Day 3-5: Generate all paper figures, write results section
 ```
 
 ---
@@ -330,44 +330,44 @@ Day 3-5: Generate all paper figures, write results section
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│          INPUT IMAGE (28×28)          │
-│          784 pixel values            │
+│                    INPUT IMAGE (28×28)                    │
+│                   784 pixel values                       │
 └───────────────────────┬─────────────────────────────────┘
-│
-▼
+                        │
+                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│       FEATURE MAP LAYER              │
-│                             │
-│ Each pixel x → φ(x) = [cos(πx/2), sin(πx/2)]     │
-│                             │
-│ "Translate each pixel into a quantum-like state"    │
+│              FEATURE MAP LAYER                           │
+│                                                          │
+│  Each pixel x → φ(x) = [cos(πx/2), sin(πx/2)]          │
+│                                                          │
+│  "Translate each pixel into a quantum-like state"        │
 └───────────────────────┬─────────────────────────────────┘
-│
-▼
+                        │
+                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│      TREE TENSOR NETWORK (10 layers)        │
-│                             │
-│ Layer 1: 512 nodes (pair up 1024 features)      │
-│ Layer 2: 256 nodes (pair up 512 outputs)       │
-│ Layer 3: 128 nodes                   │
-│ Layer 4:  64 nodes                   │
-│ Layer 5:  32 nodes                   │
-│ Layer 6:  16 nodes                   │
-│ Layer 7:  8 nodes                   │
-│ Layer 8:  4 nodes                   │
-│ Layer 9:  2 nodes                   │
-│ Layer 10:  1 node  → ROOT TENSOR           │
-│                             │
-│ "Local patterns → shapes → objects → final answer"   │
+│            TREE TENSOR NETWORK (10 layers)               │
+│                                                          │
+│  Layer 1:  512 nodes  (pair up 1024 features)            │
+│  Layer 2:  256 nodes  (pair up 512 outputs)              │
+│  Layer 3:  128 nodes                                     │
+│  Layer 4:   64 nodes                                     │
+│  Layer 5:   32 nodes                                     │
+│  Layer 6:   16 nodes                                     │
+│  Layer 7:    8 nodes                                     │
+│  Layer 8:    4 nodes                                     │
+│  Layer 9:    2 nodes                                     │
+│  Layer 10:   1 node   → ROOT TENSOR                      │
+│                                                          │
+│  "Local patterns → shapes → objects → final answer"      │
 └───────────────────────┬─────────────────────────────────┘
-│
-▼
+                        │
+                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│       CLASSIFICATION HEAD             │
-│                             │
-│ Root tensor (χ dims) → Linear → 10 class logits     │
-│                             │
-│ "Convert the final summary into a prediction"      │
+│              CLASSIFICATION HEAD                         │
+│                                                          │
+│  Root tensor (χ dims) → Linear → 10 class logits         │
+│                                                          │
+│  "Convert the final summary into a prediction"           │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -377,40 +377,40 @@ Day 3-5: Generate all paper figures, write results section
 
 ```
 tree-tensor-networks/
-├── configs/             # Experiment configurations
-│  ├── mnist.yaml          # MNIST experiment
-│  ├── fashion_mnist.yaml      # Fashion-MNIST experiment
-│  ├── cifar10.yaml         # CIFAR-10 experiment
-│  └── ablation.yaml         # Ablation study configs
+├── configs/                          # Experiment configurations
+│   ├── mnist.yaml                    # MNIST experiment
+│   ├── fashion_mnist.yaml            # Fashion-MNIST experiment
+│   ├── cifar10.yaml                  # CIFAR-10 experiment
+│   └── ablation.yaml                 # Ablation study configs
 ├── src/
-│  ├── data/
-│  │  ├── datasets.py        # Data loading & preprocessing
-│  │  └── feature_maps.py      # Quantum-inspired embeddings
-│  ├── models/
-│  │  ├── ttn.py          # Standard TTN classifier
-│  │  ├── augmented_ttn.py     # TTN + disentanglers
-│  │  ├── adaptive_ttn.py      # Learnable topology (NOVEL)
-│  │  ├── born_machine.py      # Generative model (NOVEL)
-│  │  ├── baselines.py       # LogReg, MLP, CNN, MPS
-│  │  └── tensorized_attn.py    # Compressed attention (NOVEL)
-│  ├── training/
-│  │  ├── trainer.py        # Training loop + WandB
-│  │  └── losses.py         # Custom loss functions
-│  ├── analysis/
-│  │  ├── entanglement.py      # Entropy analysis (NOVEL)
-│  │  ├── interpretability.py    # Feature importance
-│  │  └── compression.py      # Efficiency analysis
-│  └── utils/
-│    ├── tensor_ops.py       # Core tensor operations
-│    ├── metrics.py        # Evaluation metrics
-│    └── visualization.py     # Publication-quality plots
+│   ├── data/
+│   │   ├── datasets.py               # Data loading & preprocessing
+│   │   └── feature_maps.py           # Quantum-inspired embeddings
+│   ├── models/
+│   │   ├── ttn.py                    # Standard TTN classifier
+│   │   ├── augmented_ttn.py          # TTN + disentanglers
+│   │   ├── adaptive_ttn.py           # Learnable topology (NOVEL)
+│   │   ├── born_machine.py           # Generative model (NOVEL)
+│   │   ├── baselines.py              # LogReg, MLP, CNN, MPS
+│   │   └── tensorized_attn.py        # Compressed attention (NOVEL)
+│   ├── training/
+│   │   ├── trainer.py                # Training loop + WandB
+│   │   └── losses.py                 # Custom loss functions
+│   ├── analysis/
+│   │   ├── entanglement.py           # Entropy analysis (NOVEL)
+│   │   ├── interpretability.py       # Feature importance
+│   │   └── compression.py            # Efficiency analysis
+│   └── utils/
+│       ├── tensor_ops.py             # Core tensor operations
+│       ├── metrics.py                # Evaluation metrics
+│       └── visualization.py          # Publication-quality plots
 ├── experiments/
-│  ├── run_classification.py     # Main experiment script
-│  ├── run_interpretability.py    # Entanglement analysis
-│  └── run_ablation.py        # Systematic ablations
+│   ├── run_classification.py         # Main experiment script
+│   ├── run_interpretability.py       # Entanglement analysis
+│   └── run_ablation.py               # Systematic ablations
 ├── tests/
-│  └── test_ttn.py          # 34 unit tests (all passing )
-└── requirements.txt         # Dependencies
+│   └── test_ttn.py                   # 34 unit tests (all passing )
+└── requirements.txt                  # Dependencies
 ```
 
 ---
@@ -431,7 +431,7 @@ tree-tensor-networks/
 
 ## Key Hyperparameters
 
-| Parameter | What It Controls | Typical Values | Analogy |
+| Parameter | What It Controls | Typical Values |  Analogy |
 |:---|:---|:---|:---|
 | `bond_dim` (χ) | Expressivity vs. compression | 2, 4, 8, **16**, 32, 64 | The "resolution" of the compression |
 | `local_dim` (d) | Feature embedding richness | **2**, 4, 8 | How detailed the initial translation is |
@@ -467,11 +467,11 @@ If you use this code in your research, please cite:
 
 ```bibtex
 @misc{mittal2026ttn,
-title={Quantum-Inspired Hierarchical Learning: Parameter Compression and Feature
-Extraction using Tree Tensor Networks},
-author={Mittal, Tanya and Prusty, K. Soveet Kumar},
-year={2026},
-url={https://github.com/sovopr/tree-tensor-networks}
+  title={Quantum-Inspired Hierarchical Learning: Parameter Compression and Feature
+         Extraction using Tree Tensor Networks},
+  author={Mittal, Tanya and Prusty, K. Soveet Kumar},
+  year={2026},
+  url={https://github.com/sovopr/tree-tensor-networks}
 }
 ```
 
@@ -484,6 +484,6 @@ MIT License — see [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-<em>"The universe is not only queerer than we suppose, but queerer than we can suppose."</em><br>
-— J.B.S. Haldane
+  <em>"The universe is not only queerer than we suppose, but queerer than we can suppose."</em><br>
+  — J.B.S. Haldane
 </p>
