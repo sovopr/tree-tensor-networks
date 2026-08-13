@@ -330,44 +330,44 @@ Week 3:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    INPUT IMAGE (28×28)                    │
-│                   784 pixel values                       │
-└───────────────────────┬─────────────────────────────────┘
-                        │
-                        ▼
+│                   INPUT IMAGE (28×28)                   │
+│                   784 pixel values                      │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
 ┌─────────────────────────────────────────────────────────┐
-│              FEATURE MAP LAYER                           │
-│                                                          │
-│  Each pixel x → φ(x) = [cos(πx/2), sin(πx/2)]          │
-│                                                          │
-│  "Translate each pixel into a quantum-like state"        │
-└───────────────────────┬─────────────────────────────────┘
-                        │
-                        ▼
+│                   FEATURE MAP LAYER                     │
+│                                                         │
+│ Each pixel x → φ(x) = [cos(πx/2), sin(πx/2)]            │
+│                                                         │
+│ "Translate each pixel into a quantum-like state"        │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
 ┌─────────────────────────────────────────────────────────┐
-│            TREE TENSOR NETWORK (10 layers)               │
-│                                                          │
-│  Layer 1:  512 nodes  (pair up 1024 features)            │
-│  Layer 2:  256 nodes  (pair up 512 outputs)              │
-│  Layer 3:  128 nodes                                     │
-│  Layer 4:   64 nodes                                     │
-│  Layer 5:   32 nodes                                     │
-│  Layer 6:   16 nodes                                     │
-│  Layer 7:    8 nodes                                     │
-│  Layer 8:    4 nodes                                     │
-│  Layer 9:    2 nodes                                     │
-│  Layer 10:   1 node   → ROOT TENSOR                      │
-│                                                          │
-│  "Local patterns → shapes → objects → final answer"      │
-└───────────────────────┬─────────────────────────────────┘
-                        │
-                        ▼
+│             TREE TENSOR NETWORK (10 layers)             │
+│                                                         │
+│ Layer 1:  512 nodes  (pair up 1024 features)            │
+│ Layer 2:  256 nodes  (pair up 512 outputs)              │
+│ Layer 3:  128 nodes                                     │
+│ Layer 4:   64 nodes                                     │
+│ Layer 5:   32 nodes                                     │
+│ Layer 6:   16 nodes                                     │
+│ Layer 7:    8 nodes                                     │
+│ Layer 8:    4 nodes                                     │
+│ Layer 9:    2 nodes                                     │
+│ Layer 10:   1 node   → ROOT TENSOR                      │
+│                                                         │
+│ "Local patterns → shapes → objects → final answer"      │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
 ┌─────────────────────────────────────────────────────────┐
-│              CLASSIFICATION HEAD                         │
-│                                                          │
-│  Root tensor (χ dims) → Linear → 10 class logits         │
-│                                                          │
-│  "Convert the final summary into a prediction"           │
+│                  CLASSIFICATION HEAD                    │
+│                                                         │
+│ Root tensor (χ dims) → Linear → 10 class logits         │
+│                                                         │
+│ "Convert the final summary into a prediction"           │
 └─────────────────────────────────────────────────────────┘
 ```
 
