@@ -203,15 +203,9 @@ def compute_mutual_information(
     bins = num_bins
 
     for i in range(N):
+        import numpy as np
         for j in range(i + 1, N):
-            # Joint histogram
-            hist_2d, _, _ = torch.histogram(
-                torch.stack([data[:, i], data[:, j]], dim=0).T.contiguous(),
-                bins=bins,
-            ) if hasattr(torch, 'histogram') else (None, None, None)
-
-            # Fall back to numpy if torch.histogram doesn't support 2D
-            import numpy as np
+            # Joint histogram using numpy
             hist_2d_np, _, _ = np.histogram2d(
                 data_np[:, i], data_np[:, j], bins=bins
             )
