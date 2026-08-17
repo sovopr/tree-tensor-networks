@@ -25,7 +25,7 @@ env/
 Thumbs.db
 
 # Data (downloaded at runtime)
-data/
+/data/
 
 # Results & checkpoints (too large for git)
 results/

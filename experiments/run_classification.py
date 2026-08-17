@@ -26,6 +26,7 @@ from src.data.datasets import get_dataloaders
 from src.models.ttn import TreeTensorNetwork
 from src.models.augmented_ttn import AugmentedTTN
 from src.models.adaptive_ttn import AdaptiveTTN
+from src.models.dynamic_bond_ttn import DynamicBondTTN, FullyAdaptiveTTN
 from src.models.baselines import LogisticRegressionModel, MLPModel, LightweightCNN, MPSClassifier
 from src.training.trainer import Trainer
 from src.utils.metrics import count_parameters
@@ -66,6 +67,30 @@ def build_model(config: dict, model_type: str = None, input_dim: int = 784) -> t
             init_method=model_cfg.get("init_method", "qr"),
             initial_temperature=model_cfg.get("gumbel_temperature", 1.0),
             anneal_rate=model_cfg.get("gumbel_anneal_rate", 0.003),
+        )
+    elif mtype == "dynamic_bond_ttn":
+        candidate_dims = model_cfg.get("candidate_dims", [2, 4, 8, 16])
+        return DynamicBondTTN(
+            input_dim=input_dim,
+            num_classes=num_classes,
+            candidate_dims=candidate_dims,
+            feature_map_config=fmap_config,
+            init_method=model_cfg.get("init_method", "qr"),
+            initial_temperature=model_cfg.get("gumbel_temperature", 1.0),
+            anneal_rate=model_cfg.get("gumbel_anneal_rate", 0.003),
+            complexity_weight=model_cfg.get("complexity_weight", 0.01),
+        )
+    elif mtype == "fully_adaptive_ttn":
+        candidate_dims = model_cfg.get("candidate_dims", [2, 4, 8, 16])
+        return FullyAdaptiveTTN(
+            input_dim=input_dim,
+            num_classes=num_classes,
+            candidate_dims=candidate_dims,
+            feature_map_config=fmap_config,
+            init_method=model_cfg.get("init_method", "qr"),
+            initial_temperature=model_cfg.get("gumbel_temperature", 1.0),
+            anneal_rate=model_cfg.get("gumbel_anneal_rate", 0.003),
+            complexity_weight=model_cfg.get("complexity_weight", 0.01),
         )
     elif mtype == "logistic_regression":
         return LogisticRegressionModel(input_dim=input_dim, num_classes=num_classes)

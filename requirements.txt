@@ -3,10 +3,6 @@ torch>=2.2.0
 torchvision>=0.17.0
 numpy>=1.24.0
 scipy>=1.11.0
-opt-einsum>=3.3.0
-
-# Tensor network libraries
-tntorch>=1.0.0
 
 # Experiment tracking
 wandb>=0.16.0
@@ -17,11 +13,9 @@ scikit-learn>=1.3.0
 # Visualization
 matplotlib>=3.8.0
 seaborn>=0.13.0
-plotly>=5.18.0
 
 # Config management
 pyyaml>=6.0.0
-omegaconf>=2.3.0
 
 # Progress bars
 tqdm>=4.66.0

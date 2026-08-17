@@ -28,6 +28,7 @@ This project investigates **Tree Tensor Networks (TTNs)** — a quantum-inspired
 3. **Generative modeling** via TTN Born Machines
 4. **Entanglement entropy-based interpretability** for physics-grounded feature importance
 5. **Tensorized transformer compression** for real-world model compression
+6. **Dynamic bond dimensions** via learnable per-layer capacity selection
 
 ### In Plain English
 
@@ -139,6 +140,16 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 
 ---
 
+### 6. Dynamic Bond Dimensions
+
+#### Technical
+Standard TTNs use a fixed bond dimension $\chi$ across all layers. We introduce a mechanism where each layer learns its optimal bond dimension from a discrete candidate set (e.g., $\{2, 4, 8, 16\}$) using Gumbel-Softmax. A complexity penalty in the loss function encourages the model to select smaller bond dimensions when higher capacity isn't needed.
+
+#### In Plain English
+Not every step of the process needs the same amount of brainpower. Recognizing simple edges at the bottom of the tree is easier than recognizing a full object at the top. Instead of forcing every part of the tree to use the same size "memory block", we let the AI automatically discover how much memory each layer actually needs, shrinking the model even further without manual tuning.
+
+---
+
 ## Project Phases
 
 ### Phase 1: Foundation (Complete)
@@ -150,7 +161,7 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 | Data pipeline | | MNIST, Fashion-MNIST, CIFAR-10 with train/val/test splits |
 | Feature maps | | Trigonometric, Fourier (learnable), POVM embeddings |
 | Tensor utilities | | Contraction, QR init, MI computation, SVD truncation |
-| Test suite | | **34/34 tests passing** |
+| Test suite | | **41/41 tests passing** |
 
 **Translation:** We built all the tools and parts we need. Think of this as buying all the ingredients and preheating the oven.
 
@@ -164,6 +175,8 @@ Transformers (the architecture behind ChatGPT) have massive weight matrices. We 
 | TTN Classifier | | `src/models/ttn.py` | ~278K |
 | Augmented TTN | | `src/models/augmented_ttn.py` | ~300K |
 | Adaptive TTN | | `src/models/adaptive_ttn.py` | ~280K |
+| Dynamic Bond TTN | | `src/models/dynamic_bond_ttn.py` | Adaptive |
+| Fully Adaptive TTN | | `src/models/dynamic_bond_ttn.py` | Adaptive |
 | Born Machine | | `src/models/born_machine.py` | ~270K |
 | Tensorized Attention | | `src/models/tensorized_attn.py` | Varies |
 | Baselines (LogReg, MLP, CNN, MPS) | | `src/models/baselines.py` | 7K-100K |
@@ -250,10 +263,15 @@ python experiments/run_classification.py \
     --config configs/fashion_mnist.yaml \
     --model_type augmented_ttn
 
-# Adaptive TTN (our novel architecture)
+# Adaptive TTN (learnable topology)
 python experiments/run_classification.py \
     --config configs/mnist.yaml \
     --model_type adaptive_ttn
+
+# Dynamic Bond TTN (learnable bond dimensions)
+python experiments/run_classification.py \
+    --config configs/mnist.yaml \
+    --model_type dynamic_bond_ttn
 
 # CIFAR-10 (hardest dataset, use augmented TTN)
 python experiments/run_classification.py --config configs/cifar10.yaml
@@ -265,7 +283,7 @@ python experiments/run_classification.py --config configs/cifar10.yaml
 
 ```bash
 # Run every model on MNIST
-for model in ttn augmented_ttn adaptive_ttn logistic_regression mlp cnn mps; do
+for model in ttn augmented_ttn adaptive_ttn dynamic_bond_ttn fully_adaptive_ttn logistic_regression mlp cnn mps; do
     python experiments/run_classification.py \
         --config configs/mnist.yaml \
         --model_type $model \
@@ -390,6 +408,7 @@ tree-tensor-networks/
 │   │   ├── ttn.py                    # Standard TTN classifier
 │   │   ├── augmented_ttn.py          # TTN + disentanglers
 │   │   ├── adaptive_ttn.py           # Learnable topology (NOVEL)
+│   │   ├── dynamic_bond_ttn.py       # Learnable bond dims (NOVEL)
 │   │   ├── born_machine.py           # Generative model (NOVEL)
 │   │   ├── baselines.py              # LogReg, MLP, CNN, MPS
 │   │   └── tensorized_attn.py        # Compressed attention (NOVEL)
@@ -409,7 +428,7 @@ tree-tensor-networks/
 │   ├── run_interpretability.py       # Entanglement analysis
 │   └── run_ablation.py               # Systematic ablations
 ├── tests/
-│   └── test_ttn.py                   # 34 unit tests (all passing )
+│   └── test_ttn.py                   # 41 unit tests (all passing )
 └── requirements.txt                  # Dependencies
 ```
 

@@ -1,16 +1,7 @@
-"""
-Utility functions for tensor operations in Tree Tensor Networks.
-
-Includes:
-- Isometric (QR) initialization for stable training
-- Pairwise tensor contraction
-- SVD-based bond dimension truncation
-- Tree topology construction
-"""
-
 import torch
 import torch.nn as nn
 import math
+import numpy as np
 from typing import List, Tuple, Optional
 
 
@@ -59,12 +50,12 @@ def contract_pair(
     Contract a pair of local feature vectors with a TTN node tensor.
 
     Args:
-        left:  (batch, d_left)  — left child feature/output
-        right: (batch, d_right) — right child feature/output
-        node_tensor: (d_left, d_right, chi_out) — the TTN isometry
+        left:  (batch, d_left)  -- left child feature/output
+        right: (batch, d_right) -- right child feature/output
+        node_tensor: (d_left, d_right, chi_out) -- the TTN isometry
 
     Returns:
-        (batch, chi_out) — output of this TTN node
+        (batch, chi_out) -- output of this TTN node
     """
     # Einstein summation: batch contraction of left and right with the node
     # left_i * right_j * node_{i,j,k} -> output_k
@@ -178,59 +169,82 @@ def truncated_svd(
 def compute_mutual_information(
     data: torch.Tensor,
     num_bins: int = 20,
+    max_features: int = 1024,
 ) -> torch.Tensor:
     """
     Compute pairwise mutual information between all features.
 
-    Uses histogram-based estimation. For N features, returns an NxN
-    symmetric matrix where MI[i,j] measures the statistical dependence
-    between features i and j.
+    Uses vectorized histogram-based estimation. For very large feature
+    counts (e.g., CIFAR-10 with 3072 features), subsamples to max_features
+    to keep computation tractable.
 
     This is used by the Adaptive TTN to determine optimal feature pairing.
 
     Args:
         data: (num_samples, num_features) tensor
         num_bins: Number of bins for histogram estimation
+        max_features: Maximum number of features to compute MI for.
+                      If N > max_features, subsamples features.
 
     Returns:
         (num_features, num_features) mutual information matrix
     """
-    N = data.shape[1]
-    mi_matrix = torch.zeros(N, N)
-
-    # Discretize features into bins
     data_np = data.cpu().numpy()
-    bins = num_bins
+    N = data_np.shape[1]
 
-    for i in range(N):
-        import numpy as np
-        for j in range(i + 1, N):
-            # Joint histogram using numpy
-            hist_2d_np, _, _ = np.histogram2d(
-                data_np[:, i], data_np[:, j], bins=bins
+    # Subsample features if too many (CIFAR-10 has 3072)
+    if N > max_features:
+        feature_indices = np.linspace(0, N - 1, max_features, dtype=int)
+        data_sub = data_np[:, feature_indices]
+        N_sub = max_features
+    else:
+        data_sub = data_np
+        feature_indices = np.arange(N)
+        N_sub = N
+
+    mi_matrix = np.zeros((N, N), dtype=np.float32)
+
+    # Digitize all features at once for speed
+    digitized = np.zeros_like(data_sub, dtype=np.int32)
+    for i in range(N_sub):
+        col = data_sub[:, i]
+        col_min, col_max = col.min(), col.max()
+        if col_max - col_min < 1e-10:
+            digitized[:, i] = 0
+        else:
+            digitized[:, i] = np.clip(
+                ((col - col_min) / (col_max - col_min + 1e-10) * num_bins).astype(np.int32),
+                0, num_bins - 1,
             )
 
-            # Normalize to joint probability
-            p_joint = hist_2d_np / hist_2d_np.sum()
-            p_joint = p_joint + 1e-10  # avoid log(0)
+    num_samples = data_sub.shape[0]
 
-            # Marginals
-            p_i = p_joint.sum(axis=1)
+    for i in range(N_sub):
+        # Vectorized: compute joint histogram for feature i with all j > i at once
+        di = digitized[:, i]
+        # Marginal for feature i
+        p_i = np.bincount(di, minlength=num_bins).astype(np.float64) / num_samples + 1e-10
+
+        for j in range(i + 1, N_sub):
+            dj = digitized[:, j]
+
+            # Fast joint histogram via linear index
+            joint_idx = di * num_bins + dj
+            joint_counts = np.bincount(joint_idx, minlength=num_bins * num_bins)
+            p_joint = joint_counts.reshape(num_bins, num_bins).astype(np.float64) / num_samples + 1e-10
+
+            # Marginal for feature j
             p_j = p_joint.sum(axis=0)
 
             # MI = sum p(x,y) * log(p(x,y) / (p(x)*p(y)))
-            mi = 0.0
-            for a in range(bins):
-                for b in range(bins):
-                    if p_joint[a, b] > 1e-10:
-                        mi += p_joint[a, b] * np.log(
-                            p_joint[a, b] / (p_i[a] * p_j[b] + 1e-10)
-                        )
+            outer = p_i[:, None] * p_j[None, :]
+            mi = np.sum(p_joint * np.log(p_joint / (outer + 1e-10)))
 
-            mi_matrix[i, j] = mi
-            mi_matrix[j, i] = mi
+            fi, fj = feature_indices[i], feature_indices[j]
+            mi_matrix[fi, fj] = mi
+            mi_matrix[fj, fi] = mi
 
-    return mi_matrix
+    return torch.from_numpy(mi_matrix)
 
 
 def mi_guided_pairing(mi_matrix: torch.Tensor) -> List[List[Tuple[int, int]]]:

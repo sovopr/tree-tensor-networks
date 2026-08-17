@@ -48,7 +48,12 @@ class Trainer:
 
         # Device
         if device is None or device == "auto":
-            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            if torch.cuda.is_available():
+                self.device = torch.device("cuda")
+            elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                self.device = torch.device("mps")
+            else:
+                self.device = torch.device("cpu")
         else:
             self.device = torch.device(device)
         self.model = self.model.to(self.device)
@@ -76,12 +81,27 @@ class Trainer:
         else:
             self.optimizer = optim.Adam(model.parameters(), lr=self.lr, weight_decay=wd)
 
-        # Scheduler
+        # Scheduler (with warmup support)
         sched_name = train_cfg.get("scheduler", "cosine")
         if sched_name == "cosine":
-            self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
-                self.optimizer, T_max=self.epochs, eta_min=self.lr * 0.01
-            )
+            if self.warmup_epochs > 0:
+                # Linear warmup then cosine decay
+                warmup_scheduler = optim.lr_scheduler.LinearLR(
+                    self.optimizer, start_factor=0.01, total_iters=self.warmup_epochs
+                )
+                cosine_scheduler = optim.lr_scheduler.CosineAnnealingLR(
+                    self.optimizer, T_max=max(self.epochs - self.warmup_epochs, 1),
+                    eta_min=self.lr * 0.01
+                )
+                self.scheduler = optim.lr_scheduler.SequentialLR(
+                    self.optimizer,
+                    schedulers=[warmup_scheduler, cosine_scheduler],
+                    milestones=[self.warmup_epochs],
+                )
+            else:
+                self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
+                    self.optimizer, T_max=self.epochs, eta_min=self.lr * 0.01
+                )
         elif sched_name == "step":
             self.scheduler = optim.lr_scheduler.StepLR(
                 self.optimizer, step_size=30, gamma=0.5
@@ -218,12 +238,13 @@ class Trainer:
             if self.scheduler is not None:
                 self.scheduler.step()
 
-            # Temperature annealing for Adaptive TTN
+            # Temperature annealing for Adaptive TTN (skip during warmup)
             if hasattr(self.model, "anneal_temperature"):
-                temp = self.model.anneal_temperature()
-                if self.use_wandb and self.wandb_run:
-                    import wandb
-                    wandb.log({"temperature": temp}, step=epoch)
+                if epoch > self.warmup_epochs:
+                    temp = self.model.anneal_temperature()
+                    if self.use_wandb and self.wandb_run:
+                        import wandb
+                        wandb.log({"temperature": temp}, step=epoch)
 
             # Logging
             current_lr = self.optimizer.param_groups[0]["lr"]
@@ -333,5 +354,5 @@ class Trainer:
         """Load the best model checkpoint."""
         path = self.checkpoint_dir / "best_model.pt"
         if path.exists():
-            checkpoint = torch.load(path, map_location=self.device, weights_only=True)
+            checkpoint = torch.load(path, map_location=self.device, weights_only=False)
             self.model.load_state_dict(checkpoint["model_state_dict"])

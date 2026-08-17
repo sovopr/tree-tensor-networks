@@ -289,5 +289,76 @@ class TestEntanglement:
                 assert e >= 0
 
 
+# ============================================================
+# Dynamic Bond TTN Tests
+# ============================================================
+
+class TestDynamicBondTTN:
+    def test_forward_shape(self):
+        from src.models.dynamic_bond_ttn import DynamicBondTTN
+        model = DynamicBondTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4, 8])
+        x = torch.rand(4, 16)
+        out = model(x)
+        assert out.shape == (4, 10)
+
+    def test_selected_dimensions(self):
+        from src.models.dynamic_bond_ttn import DynamicBondTTN
+        model = DynamicBondTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4, 8])
+        dims = model.get_selected_dimensions()
+        assert len(dims) == model.num_tree_layers
+        for d in dims:
+            assert d in [2, 4, 8]
+
+    def test_complexity_penalty(self):
+        from src.models.dynamic_bond_ttn import DynamicBondTTN
+        model = DynamicBondTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4, 8])
+        penalty = model.get_complexity_penalty()
+        assert penalty.dim() == 0  # scalar
+        assert 0.0 <= penalty.item() <= 1.0
+
+    def test_temperature_annealing(self):
+        from src.models.dynamic_bond_ttn import DynamicBondTTN
+        model = DynamicBondTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4, 8])
+        t0 = model.temperature
+        t1 = model.anneal_temperature()
+        assert t1 < t0
+
+    def test_gradient_flow(self):
+        from src.models.dynamic_bond_ttn import DynamicBondTTN
+        model = DynamicBondTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4])
+        model.train()
+        x = torch.rand(4, 16)
+        out = model(x)
+        loss = out.sum()
+        loss.backward()
+        # Check that bond selector logits have gradients
+        for layer in model.ttn_layers:
+            assert layer.bond_selector.selection_logits.grad is not None
+
+
+class TestFullyAdaptiveTTN:
+    def test_forward_shape(self):
+        from src.models.dynamic_bond_ttn import FullyAdaptiveTTN
+        model = FullyAdaptiveTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4, 8])
+        x = torch.rand(4, 16)
+        out = model(x)
+        assert out.shape == (4, 10)
+
+    def test_gradient_flow(self):
+        from src.models.dynamic_bond_ttn import FullyAdaptiveTTN
+        model = FullyAdaptiveTTN(input_dim=16, num_classes=10, candidate_dims=[2, 4])
+        model.train()
+        x = torch.rand(4, 16)
+        out = model(x)
+        loss = out.sum()
+        loss.backward()
+        has_grad = any(
+            p.grad is not None and p.grad.abs().sum() > 0
+            for p in model.parameters()
+        )
+        assert has_grad
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
