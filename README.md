@@ -4,7 +4,7 @@
     <strong>Hierarchical Learning, Parameter Compression & Feature Extraction</strong>
   </p>
   <p align="center">
-    <em>By K. Soveet Kumar Prusty & Tanya Mittal</em>
+    <em>By K Soveet Kumar Prusty & Tanya Mittal</em>
   </p>
   <p align="center">
     <a href="#what-is-this-project">What Is This?</a> •
@@ -488,7 +488,7 @@ If you use this code in your research, please cite:
 @misc{prusty2026ttn,
   title={Quantum-Inspired Hierarchical Learning: Parameter Compression and Feature
          Extraction using Tree Tensor Networks},
-  author={Prusty, K. Soveet Kumar and Mittal, Tanya},
+  author={Prusty, K Soveet Kumar and Mittal, Tanya},
   year={2026},
   url={https://github.com/sovopr/tree-tensor-networks}
 }
